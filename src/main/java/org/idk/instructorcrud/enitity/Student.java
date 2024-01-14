@@ -6,53 +6,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="instructor")
-public class Instructor {
+@Table(name = "student")
+public class Student {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     @Column(name = "first_name")
     private String firstName;
-
     @Column(name = "last_name")
-    private String lastName;
-
+    private String LastName;
     @Column(name = "email")
     private String email;
-    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, })
-    @JoinColumn(name = "instructor_detail_id")
-    private InstructorDetail instructorDetail;
-//    @OneToMany(mappedBy = "instructor"
-//                , cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}
-//                , fetch = FetchType.EAGER)
-//    private List<Course> courses;
-
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "instructor_detail_id")
-//    private InstructorDetail instructorDetail;
-
-    @OneToMany(mappedBy = "instructor",
-            fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-                    CascadeType.DETACH, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name="course_student",
+                joinColumns=@JoinColumn(name="student_id"),
+                inverseJoinColumns=@JoinColumn(name="course_id"))
     private List<Course> courses;
-    public Instructor() {
+
+    public Student() {
     }
 
-    public Instructor(String firstName, String lastName, String email) {
+    public Student(String firstName, String lastName, String email) {
         this.firstName = firstName;
-        this.lastName = lastName;
+        LastName = lastName;
         this.email = email;
     }
+
     public void addCourse(Course tempCourse) {
         if (this.courses == null) {
             this.courses = new ArrayList<>();
         }
-
         this.courses.add(tempCourse);
-        tempCourse.setInstructor(this);
     }
     public int getId() {
         return id;
@@ -71,11 +56,11 @@ public class Instructor {
     }
 
     public String getLastName() {
-        return lastName;
+        return LastName;
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        LastName = lastName;
     }
 
     public String getEmail() {
@@ -84,14 +69,6 @@ public class Instructor {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public InstructorDetail getInstructorDetail() {
-        return instructorDetail;
-    }
-
-    public void setInstructorDetail(InstructorDetail instructorDetail) {
-        this.instructorDetail = instructorDetail;
     }
 
     public List<Course> getCourses() {
@@ -103,13 +80,14 @@ public class Instructor {
     }
 
     @Override
-    public String toString() {
-        return "Instructor{" +
+    public String
+
+    toString() {
+        return "Student{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
+                ", LastName='" + LastName + '\'' +
                 ", email='" + email + '\'' +
-                ", instructorDetail=" + instructorDetail +
                 '}';
     }
 }
